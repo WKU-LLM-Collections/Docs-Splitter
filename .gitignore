@@ -1,0 +1,6 @@
+_build
+node_modules
+splited_files
+processed
+.DS_Store
+pnpm-lock.yaml
