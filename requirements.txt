@@ -1,5 +1,8 @@
 sphinx>=7.2.0
 myst-parser>=2.0.0
 sphinx-copybutton>=0.5.0
-sphinx-design>=0.5.0 
+sphinx-design>=0.5.0
 sphinx-markdown-builder>=0.6.8
+aiohttp>=3.8.5
+pymilvus==2.5.7
+sentence-transformers>=2.2.2

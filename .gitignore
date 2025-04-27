@@ -2,5 +2,10 @@ _build
 node_modules
 splited_files
 processed
+.venv
 .DS_Store
 pnpm-lock.yaml
+doc
+volumes
+final_sections
+generated_contexts
