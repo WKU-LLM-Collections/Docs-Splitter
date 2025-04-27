@@ -126,6 +126,10 @@ if (existsSync("splited_files")) {
   rmSync("splited_files", { recursive: true, force: true });
 }
 
+function isError(name) {
+  return /^E\d{4}\.md$/.test(name);
+}
+
 mkdirSync("splited_files");
 
 processFolder(process.argv[2]);
@@ -138,7 +142,17 @@ function processFolder(folderPath) {
     } else if (file.endsWith(".md")) {
       const filePath = join(folderPath, file);
       const input = readFileSync(filePath, "utf8");
-      const sections = splitByOptimalLevel(input, contextSize);
+      const sections = isError(file)
+        ? [{
+            title: file,
+            content: input,
+            context: {
+              before: "no context available",
+              after: "no context available",
+            },
+          },
+        ]
+        : splitByOptimalLevel(input, contextSize);
       sections.forEach((section, index) => {
         if (section.title) {
           const baseFilename = section.title
@@ -154,17 +168,19 @@ function processFolder(folderPath) {
           console.log(`Created main content: ${mainFilename}`);
 
           const contextFilename = `context_${baseFilename}.md`;
-          const contextContent = `# Context Information for "${section.title}"
+          const contextContent = `# Context Information for ${file} "${
+            section.title
+          }"
       
-      This section is part of a larger document. Here is the context information for LLM processing:
+This section is part of a larger document. Here is the context information for LLM processing:
       
-      ## Previous Content
-      ${section.context.before || "No previous content available."}
+## Previous Content
+${section.context.before || "No previous content available."}
       
-      ## Next Content
-      ${section.context.after || "No next content available."}
+## Next Content
+${section.context.after || "No next content available."}
       
-      This context information helps understand the relationship between this section and its surrounding content.`;
+This context information helps understand the relationship between this section and its surrounding content.`;
 
           writeFileSync(
             join("splited_files", uuid + "_" + contextFilename),
